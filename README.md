@@ -1,37 +1,23 @@
 # ACEest Fitness & Gym - Automated Deployment Workflow
 
-## 🚀 Project Overview
-As a Junior DevOps Engineer, I have transitioned the ACEest Fitness logic from a local desktop application to a robust, containerized Web API. This solution ensures code integrity via automated testing and environment consistency through Docker.
+## Overview
+This repository contains the refactored Flask web application for ACEest Fitness & Gym. 
+The project demonstrates a full CI/CD lifecycle, transitioning from a Python-based 
+logic core to a containerized, cloud-validated deployment.
 
-## 🛠 Tech Stack
-- **Framework:** Flask (Python)
-- **Containerization:** Docker
-- **CI/CD:** GitHub Actions & Jenkins
-- **Testing:** Pytest
-- **VCS:** Git/GitHub
+## Tech Stack
+* **Framework:** Flask (Python 3.9)
+* **Testing:** Pytest
+* **Containerization:** Docker
+* **CI/CD:** GitHub Actions & Jenkins
 
-## 📋 Phase-by-Phase Implementation
+## Local Setup Instructions
+1. **Clone the repo:** `git clone <your-repo-link>`
+2. **Install dependencies:** `pip install -r requirements.txt`
+3. **Run application:** `python app.py`
+4. **Access API:** Navigate to `http://localhost:5000/health`
 
-### 1. Development & Modularization
-The core logic was migrated from Tkinter to a Flask-based REST API (`app.py`), enabling server-side execution suitable for cloud environments.
-
-### 2. Unit Testing & Quality Gates
-We integrated the **Pytest** framework. Every build must pass:
-- `test_health_endpoint`: Ensures the service is live.
-- `test_calorie_logic`: Validates the fitness calculation accuracy.
-
-### 3. Containerization
-The `Dockerfile` uses a multi-layer build approach to ensure the "write once, run anywhere" consistency, eliminating environmental drift.
-
-### 4. CI/CD Integration
-- **GitHub Actions:** Every `push` triggers a `.github/workflows/main.yml` pipeline that Lints the code, runs Unit Tests, and builds the Docker image.
-- **Jenkins:** Acts as the secondary validation layer, performing clean builds in a controlled environment to ensure staging readiness.
-
-## 🏃 Setup Instructions
-1. **Local Run:** `pip install -r requirements.txt`
-   `python app.py`
-2. **Run Tests:**
-   `pytest`
-3. **Docker Deployment:**
-   `docker build -t aceest-fitness .`
-   `docker run -p 5000:5000 aceest-fitness`
+## Manual Testing
+To execute the unit test suite manually, run:
+```bash
+pytest test_app.py

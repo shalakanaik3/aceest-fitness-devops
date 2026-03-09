@@ -1,23 +1,30 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout') {
+        stage('VCS Checkout') {
             steps {
                 checkout scm
             }
         }
-        stage('Test') {
+        stage('Environment Build') {
             steps {
-                echo 'Running Pytest...'
-                // Note: Since Jenkins is in Docker, it needs python installed 
-                // or you can use a Docker agent. For now, we'll simulate the gate:
-                echo 'Validation Complete.'
+                sh 'pip install -r requirements.txt'
             }
         }
-        stage('Build') {
+        stage('Unit Testing (Pytest)') {
             steps {
-                echo 'Building Docker Image...'
+                sh 'pytest test_app.py'
             }
+        }
+        stage('Docker Assembly') {
+            steps {
+                sh 'docker build -t aceest-gym:${BUILD_NUMBER} .'
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Deployment Integrity Guaranteed.'
         }
     }
 }
