@@ -1,0 +1,11 @@
+# Python temporary files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Database files
+*.db
+
+# Virtual environments
+venv/
+.env
