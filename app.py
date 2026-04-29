@@ -59,4 +59,4 @@ def add_client():
 if __name__ == '__main__':
     init_db()
     # Bind to 0.0.0.0 to allow Docker port mapping
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', debug=False)
