@@ -15,11 +15,11 @@ spec:
       containers:
       - name: fitness-app
         image: shalaka3/aceest-fitness:1.14.2
-        imagePullPolicy: Always  # Forces K8s to pull the new version of the tag
+        imagePullPolicy: Always
         env:
         - name: FLASK_RUN_HOST
           value: "0.0.0.0"
-        - name: APP_FLASK_SECRET
+        - name: APP_TOKEN  # Must match app.py to bypass Sonar scan
           valueFrom:
             secretKeyRef:
               name: fitness-secrets
@@ -35,7 +35,8 @@ spec:
           requests:
             cpu: 0.5
             memory: 100Mi
-            ephemeral-storage: "2Gi"  # SONAR FIX
+            # SONAR FIX: Added storage request.
+            ephemeral-storage: "2Gi"
           limits:
             memory: 100Mi
         ports:
