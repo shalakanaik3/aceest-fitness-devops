@@ -1,20 +1,27 @@
 from flask import Flask, jsonify, request
-from flask_wtf.csrf import CSRFProtect # Added import
+from flask_wtf.csrf import CSRFProtect
 import sqlite3
 import os
 
 app = Flask(__name__)
 
-# SECURITY FIX: Set a secret key for CSRF to work
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-me')
+# SECURITY FIX: Remove hard-coded strings to satisfy SonarCloud.
+# The app will now pull the key from the K8s environment variable.
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+
+# Compliant credential handling via environment variables
+username = os.getenv("username") 
+password = os.getenv("password") 
+# Note: In a real app, you'd use these for DB or API auth
+usernamePassword = 'user=%s&password=%s' % (username, password) 
 
 csrf = CSRFProtect()
 csrf.init_app(app)
 
-DB_NAME = "aceest_fitness.db"
+DB_NAME = "/tmp/aceest_fitness.db"
 
 def init_db():
-    with sqlite3.connect(DB_NAME) as conn: # Using 'with' handles close() automatically
+    with sqlite3.connect(DB_NAME) as conn:
         cur = conn.cursor()
         cur.execute("""
             CREATE TABLE IF NOT EXISTS clients (
@@ -28,7 +35,7 @@ def init_db():
         conn.commit()
 
 @app.route('/health', methods=['GET'])
-@csrf.exempt # Exempting health check from CSRF
+@csrf.exempt 
 def health_check():
     return jsonify({"status": "ACEest System Online", "version": "1.0.0"}), 200
 
@@ -42,7 +49,7 @@ def get_clients():
     return jsonify(clients), 200
 
 @app.route('/add_client', methods=['POST'])
-@csrf.exempt # APIs usually exempt CSRF or use Bearer Tokens instead
+@csrf.exempt 
 def add_client():
     data = request.json
     if not data or 'name' not in data:
@@ -60,5 +67,6 @@ def add_client():
 
 if __name__ == '__main__':
     init_db()
-    # Use 0.0.0.0 if running in Docker, otherwise 127.0.0.1 is fine for local
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    # 0.0.0.0 allows the K8s Service to reach the container
+    # Set debug=False for production readiness
+    app.run(host='0.0.0.0', port=5000, debug=False)

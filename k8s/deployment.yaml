@@ -3,9 +3,9 @@ kind: Deployment
 metadata:
   name: aceest-fitness-deployment
 spec:
-  replicas: 3 # Running 3 copies ensures high availability
+  replicas: 3 
   strategy:
-    type: RollingUpdate # Ensures zero-downtime during updates
+    type: RollingUpdate 
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 1
@@ -19,14 +19,22 @@ spec:
     spec:
       containers:
       - name: fitness-app
-        # Use your actual Docker Hub username here
-        image: shalaka3/aceest-fitness:1.14.2 # Compliant, fixed tag
+        image: shalaka3/aceest-fitness:1.14.2 
         env:
+        # Injected from a K8s Secret to satisfy security requirements
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
               name: fitness-secrets
               key: flask-secret
+        # Adding the variables referenced in your app.py
+        - name: username
+          value: "admin_user"
+        - name: password
+          valueFrom:
+            secretKeyRef:
+              name: fitness-secrets
+              key: db-password
         resources:
           limits:
             memory: 100Mi
