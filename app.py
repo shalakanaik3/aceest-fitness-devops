@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 # Pull secret from environment (Injected via K8s Secret)
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+app.config['SECRET_KEY'] = os.getenv("FLASK_APP_SK")
 
 # Compliant environment variable handling
 username = os.getenv("username") 

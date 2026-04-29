@@ -19,8 +19,10 @@ spec:
     spec:
       containers:
       - name: fitness-app
-        # Make sure to use the version you are pushing (1.14.3)
-        image: shalaka3/aceest-fitness:1.14.3 
+        resources:
+          requests:
+            ephemeral-storage: "2Gi"
+        image: shalaka3/aceest-fitness:1.14.2
         env:
         # SONAR FIX: Override the default 127.0.0.1 to allow K8s traffic
         - name: FLASK_RUN_HOST
