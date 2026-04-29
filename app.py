@@ -72,5 +72,4 @@ if __name__ == '__main__':
     # K8S FIX: Use an environment variable to switch to 0.0.0.0 in the cluster.
     host = os.getenv("FLASK_RUN_HOST", "127.0.0.1")
     
-    # debug=False is required for the compliant solution
     app.run(host=host, port=5000, debug=False)
