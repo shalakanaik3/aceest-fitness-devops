@@ -27,6 +27,7 @@ spec:
           requests:
             ephemeral-storage: "2Gi"
             cpu: 0.5
+            memory: 100Mi
         ports:
         - containerPort: 5000
       automountServiceAccountToken: false

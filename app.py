@@ -3,6 +3,7 @@ import sqlite3
 import os
 
 app = Flask(__name__)
+app.config['WTF_CSRF_ENABLED'] = False # Sensitive
 DB_NAME = "aceest_fitness.db"
 
 def init_db():
