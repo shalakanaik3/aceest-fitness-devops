@@ -20,10 +20,13 @@ spec:
       containers:
       - name: fitness-app
         # Use your actual Docker Hub username here
-        image: your-dockerhub-username/aceest-fitness:latest
+        image: your-dockerhub-username/aceest-fitness:1.14.2 # Compliant, fixed tag
         resources:
           limits:
             memory: 100Mi
+          requests:
+            ephemeral-storage: "2Gi"
+            cpu: 0.5
         ports:
         - containerPort: 5000
       automountServiceAccountToken: false
