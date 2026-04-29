@@ -3,12 +3,7 @@ kind: Deployment
 metadata:
   name: aceest-fitness-deployment
 spec:
-  replicas: 3 # High availability: 3 pods running across the cluster
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
+  replicas: 3
   selector:
     matchLabels:
       app: aceest-fitness
@@ -19,41 +14,30 @@ spec:
     spec:
       containers:
       - name: fitness-app
-        resources:
-          requests:
-            ephemeral-storage: "2Gi"
         image: shalaka3/aceest-fitness:1.14.2
         env:
-        # SONAR FIX: Override the default 127.0.0.1 to allow K8s traffic
         - name: FLASK_RUN_HOST
           value: "0.0.0.0"
-        
-        # SECURITY: Pulling the Flask Secret Key from K8s Secrets
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
               name: fitness-secrets
               key: flask-secret
-
-        # APP REQUIREMENT: Setting the username variable
         - name: username
           value: "fitness_admin"
-
-        # SECURITY: Pulling the Database password from K8s Secrets
         - name: password
           valueFrom:
             secretKeyRef:
               name: fitness-secrets
               key: db-password
-
         resources:
-          limits:
-            memory: 100Mi
           requests:
             cpu: 0.5
             memory: 100Mi
+            # SONAR FIX: Satisfies the 'Specify storage request' requirement
+            ephemeral-storage: "2Gi"
+          limits:
+            memory: 100Mi
         ports:
         - containerPort: 5000
-      
-      # SECURITY BEST PRACTICE: Disable automounting of API credentials
       automountServiceAccountToken: false
