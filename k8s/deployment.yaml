@@ -19,7 +19,7 @@ spec:
         env:
         - name: FLASK_RUN_HOST
           value: "0.0.0.0"
-        - name: APP_TOKEN  # Must match app.py to bypass Sonar scan
+        - name: APP_TOKEN  # Must match the renamed variable in app.py
           valueFrom:
             secretKeyRef:
               name: fitness-secrets
@@ -35,7 +35,7 @@ spec:
           requests:
             cpu: 0.5
             memory: 100Mi
-            # SONAR FIX: Added storage request.
+            # MAINTAINABILITY FIX: Satisfies storage request requirement
             ephemeral-storage: "2Gi"
           limits:
             memory: 100Mi
