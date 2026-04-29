@@ -5,19 +5,18 @@ import os
 
 app = Flask(__name__)
 
-# SECURITY FIX: Remove hard-coded strings to satisfy SonarCloud.
-# The app will now pull the key from the K8s environment variable.
+# Pull secret from environment (Injected via K8s Secret)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
-# Compliant credential handling via environment variables
+# Compliant environment variable handling
 username = os.getenv("username") 
 password = os.getenv("password") 
-# Note: In a real app, you'd use these for DB or API auth
 usernamePassword = 'user=%s&password=%s' % (username, password) 
 
 csrf = CSRFProtect()
 csrf.init_app(app)
 
+# SQLite fix: Move to /tmp so the non-root user has write access
 DB_NAME = "/tmp/aceest_fitness.db"
 
 def init_db():
@@ -35,7 +34,8 @@ def init_db():
         conn.commit()
 
 @app.route('/health', methods=['GET'])
-@csrf.exempt 
+# Exempting Health Check is generally okay as it is a GET (safe method)
+# but we can remove it to be 100% "Sonar-Clean"
 def health_check():
     return jsonify({"status": "ACEest System Online", "version": "1.0.0"}), 200
 
@@ -49,7 +49,7 @@ def get_clients():
     return jsonify(clients), 200
 
 @app.route('/add_client', methods=['POST'])
-@csrf.exempt 
+# COMPLIANT: Removed @csrf.exempt to satisfy SonarCloud security rules
 def add_client():
     data = request.json
     if not data or 'name' not in data:
@@ -67,6 +67,10 @@ def add_client():
 
 if __name__ == '__main__':
     init_db()
-    # 0.0.0.0 allows the K8s Service to reach the container
-    # Set debug=False for production readiness
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    
+    # SONAR FIX: Default to 127.0.0.1 for local safety.
+    # K8S FIX: Use an environment variable to switch to 0.0.0.0 in the cluster.
+    host = os.getenv("FLASK_RUN_HOST", "127.0.0.1")
+    
+    # debug=False is required for the compliant solution
+    app.run(host=host, port=5000, debug=False)
