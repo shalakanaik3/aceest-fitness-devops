@@ -20,7 +20,7 @@ spec:
       containers:
       - name: fitness-app
         # Use your actual Docker Hub username here
-        image: your-dockerhub-username/aceest-fitness:1.14.2 # Compliant, fixed tag
+        image: shalaka3/aceest-fitness:1.14.2 # Compliant, fixed tag
         env:
         - name: SECRET_KEY
           valueFrom:
