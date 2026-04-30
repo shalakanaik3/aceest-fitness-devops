@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aceest-canary
+spec:
+  replicas: 1 # Only 1 pod for testing new features
+  selector:
+    matchLabels:
+      app: aceest-fitness
+      version: canary
+  template:
+    metadata:
+      labels:
+        app: aceest-fitness
+        version: canary
+    spec:
+      containers:
+      - name: fitness-app
+        image: YOUR_DOCKER_HUB_USERNAME/aceest-fitness:canary-v2
+        ports:
+        - containerPort: 5000
