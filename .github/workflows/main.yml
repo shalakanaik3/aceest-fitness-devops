@@ -1,18 +1,24 @@
-name: ACEest CI/CD
+name: ACEest CI/CD Pipeline
+
 on: [push, pull_request]
 
 jobs:
-  validate-and-build:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup Python
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-      - name: Install deps
-        run: pip install flask pytest
-      - name: Run Pytest
-        run: pytest test_app.py
-      - name: Docker Build
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build Docker Image
         run: docker build -t aceest-app .
+
+      - name: Run Pytest
+        run: pytest

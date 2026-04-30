@@ -1,6 +1,2 @@
-flask
-pytest
-flake8
-fpdf
-matplotlib
-flask-wtf
+flask==3.0.3
+pytest==8.2.0
